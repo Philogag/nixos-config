@@ -1,6 +1,6 @@
 { pkgs, username, ... }:
 {
   imports = [
-    ./shell/set-shell.nix
+    ./shell/export-nixos.nix
   ];
 }

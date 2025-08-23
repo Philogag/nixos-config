@@ -11,20 +11,8 @@
   boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
 
-  fileSystems."/" =
-    { device = "/dev/disk/by-uuid/415b5fe8-a0e9-45e3-bf5e-31c818382c61";
-      fsType = "ext4";
-    };
-
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/8B20-A151";
-      fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
-    };
-
-  swapDevices =
-    [ { device = "/dev/disk/by-uuid/547a89d8-0d5e-44a2-b56c-68fcbea1f623"; }
-    ];
+  imports = [ ./disko-config.nix ];
+  disko.devices.disk.main.device = "/dev/sda";
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's

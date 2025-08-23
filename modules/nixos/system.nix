@@ -5,10 +5,8 @@
   ...
 }: {
   imports = [
-    ./user.nix
-    ./font.nix
-    ./sound.nix
     ./services
+    ./general
   ];
 
   # customise /etc/nix/nix.conf declaratively via `nix.settings`
