@@ -59,6 +59,7 @@
     wget
     git
     neofetch
+    ncdu
   ];
 
   # solves issue by enabling unpatched dynamic binaries to run on NixOS

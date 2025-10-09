@@ -2,6 +2,7 @@
   pkgs,
   lib,
   username,
+  virtualisation,
   ...
 }: {
 
@@ -27,5 +28,21 @@
       /home/${username}/workspace  *(rw,sync,no_root_squash,no_subtree_check)
     '';
   };
+
+  virtualisation.docker = {
+    enable = true;
+    enableOnBoot = true;
+    daemon.settings = {
+      data-root = "/opt/docker";
+      registry-mirrors = [
+        "https://docker.m.daocloud.io"
+        "https://docker.1ms.run"
+      ];
+      insecure-registries = [
+        "10.0.5.99:5000"
+      ];
+    };
+  };
+  users.extraGroups.docker.members = [username];
 
 }
