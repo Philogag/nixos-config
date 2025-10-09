@@ -19,7 +19,7 @@
     variant = "";
   };
 
-  environment.systemPackages = [
-    pkgs.kdePackages.networkmanager-qt
+  environment.systemPackages = with pkgs; [
+    kdePackages.networkmanager-qt
   ];
 }

@@ -54,6 +54,7 @@
           disko.nixosModules.disko
           ./hosts/develop-vm
           ./user/${username}/nixos.nix
+          ./modules/profile/develop/system.nix
 
           home-manager.nixosModules.home-manager
           {
@@ -63,7 +64,7 @@
             home-manager.users.${username} = {pkgs, ...}: {
               imports = [
                 ./user/${username}/home-manager.nix
-                ./modules/home-manager/profile/develop
+                ./modules/profile/develop/home-manager.nix
               ];
             };
           }
