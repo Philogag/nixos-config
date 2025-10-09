@@ -62,6 +62,31 @@
           };
         };
       };
+
+      data = {
+        type = "disk";
+        device = "/dev/sdb";
+        content = {
+          type = "gpt";
+          partitions = {
+            root = {
+              size = "100%";
+              content = {
+                type = "btrfs";
+                extraArgs = [ "-f" ]; # Override existing partition
+                # mountpoint = "/data-root";
+                subvolumes = {
+                  # Subvolume name is different from mountpoint
+                  "@/workspace" = {
+                    mountpoint = "/home/philogag/workspace";
+                  };
+                };
+              };
+            };
+          };
+        };
+      };
+
     };
   };
 }

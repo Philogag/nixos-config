@@ -19,10 +19,4 @@
     variant = "";
   };
 
-  # some plugins for KDE Plasma Desktop 
-  environment.systemPackages = with pkgs; [
-    kdePackages.networkmanager-qt
-    kdePackages.modemmanager-qt
-    kdePackages.plasma-nm
-  ];
 }
