@@ -1,10 +1,8 @@
 {pkgs, ...}: {
 
   imports = [
-    ../../modules/home-manager/core.nix
+    ../../modules/home-manager
 
-    ./git/export-home.nix
     ./shell/export-home.nix
   ];
-
 }

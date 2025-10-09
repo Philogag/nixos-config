@@ -18,6 +18,7 @@
 
   outputs = inputs @ { self, nixpkgs, disko, home-manager, ... }: {
     nixosConfigurations = {
+
       test-vm = let
         username = "philogag";
         specialArgs = {inherit username;};
@@ -34,10 +35,41 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = inputs // specialArgs;
-            home-manager.users.${username} = import ./user/${username}/home-manager.nix;
+            home-manager.users.${username} = {pkgs, ...}: {
+              imports = [
+                ./user/${username}/home-manager.nix
+              ];
+            };
           }
         ];
       };
+
+      develop-vm = let
+        username = "philogag";
+        specialArgs = {inherit username;};
+      in nixpkgs.lib.nixosSystem {
+        inherit specialArgs;
+        system = "x86_64-linux";
+        modules = [
+          disko.nixosModules.disko
+          ./hosts/develop-vm
+          ./user/${username}/nixos.nix
+
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = inputs // specialArgs;
+            home-manager.users.${username} = {pkgs, ...}: {
+              imports = [
+                ./user/${username}/home-manager.nix
+                ./modules/home-manager/profile/develop
+              ];
+            };
+          }
+        ];
+      };
+
     };
   };
 }

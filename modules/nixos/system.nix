@@ -60,4 +60,7 @@
     git
     neofetch
   ];
+
+  # solves issue by enabling unpatched dynamic binaries to run on NixOS
+  programs.nix-ld.enable = true;
 }
