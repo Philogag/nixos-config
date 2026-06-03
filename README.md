@@ -24,7 +24,7 @@ passwd philogag
 reboot
 ```
 
-## Use tips
+## Update
 
 when update config refresh by 
 ```bash
@@ -32,12 +32,11 @@ sudo nixos-rebuild test --print-build-logs --verbose
 sudo nixos-rebuild switch
 ```
 
-## Components
+## Profiles
 
-+ Desktop Manager: ligntdm
-+ Window Manager: KDE + hyprland
-
-## Reference
-
-Start with snippets from https://github.com/ryan4yin/nix-config
++ Desktop:
+    + desktop-develop
+    + desktop-gaming
++ Server:
+    + server-docker
 

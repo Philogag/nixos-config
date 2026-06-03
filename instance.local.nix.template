@@ -1,0 +1,11 @@
+{
+  test-vm = {                         # hostname of deploy
+    select_host = "test-vm";          # the hardware config of this instance, select one of folder on ./hosts
+    select_profile = "server-docker"; # the software profile of this instance, select one of folder on ./profiles
+    system = "x86_64-linux";          # the architecture of os
+    username = "philogag";            # which is the username you are going to use
+  };
+}
+
+# You can add more instance in this file and it will not be tracked by git
+(import ./instance.local.nix or {})

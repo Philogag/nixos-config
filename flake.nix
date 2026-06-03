@@ -1,76 +1,49 @@
 {
-  description = "NixOS config of philogag";
+  description = "NixOS Preset Config";
 
-  nixConfig = {
-    extra-substituters = [
-      "https://mirrors.ustc.edu.cn/nix-channels/store"
-      "https://mirrors.ustc.edu.cn/nix-channels/nixos-25.05"
-    ];
-  };
+  inputs = import ./inputs.nix;
 
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
-    disko.url = "github:nix-community/disko";
-    disko.inputs.nixpkgs.follows = "nixpkgs";
-    home-manager.url = "github:nix-community/home-manager/release-25.05";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
-  };
+  outputs = inputs @ { self, nixpkgs, disko, home-manager, ... }:
 
-  outputs = inputs @ { self, nixpkgs, disko, home-manager, ... }: {
-    nixosConfigurations = {
+    let
+      lib = nixpkgs.lib;
+      version = import ./version.nix;
+      instance = import ./instance.nix;
 
-      test-vm = let
-        username = "philogag";
-        specialArgs = {inherit username;};
-      in nixpkgs.lib.nixosSystem { 
-        inherit specialArgs;
-        system = "x86_64-linux";
-        modules = [
-          disko.nixosModules.disko
-          ./hosts/test-vm
-          ./user/${username}/nixos.nix
+      makeNixosConfiguration = name: cfg:
+        let
+          select_profile = cfg.select_profile;
+          system = cfg.system;
+          username = cfg.username;
+          specialArgs = { inherit username version; };
+          sharedModule = {
+            networking.hostName = name;
+            system.stateVersion = version.nixos;
+            nix.settings.substituters = [ "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store" ];
+          };
+        in lib.nixosSystem {
+          inherit specialArgs;
+          system = ${system};
+          modules = [
+            sharedModule
+            ./hosts/${name}
+            ./profiles/${select_profile}/nixos.nix
 
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = inputs // specialArgs;
-            home-manager.users.${username} = {pkgs, ...}: {
-              imports = [
-                ./user/${username}/home-manager.nix
-              ];
-            };
-          }
-        ];
-      };
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.extraSpecialArgs = inputs // specialArgs;
+              home-manager.users.${username} = { pkgs, ... }: {
+                imports = [
+                  ./profiles/${select_profile}/home-manager.nix
+                ];
+              };
+            }
+          ];
+        };
 
-      develop-vm = let
-        username = "philogag";
-        specialArgs = {inherit username;};
-      in nixpkgs.lib.nixosSystem {
-        inherit specialArgs;
-        system = "x86_64-linux";
-        modules = [
-          disko.nixosModules.disko
-          ./hosts/develop-vm
-          ./user/${username}/nixos.nix
-          ./modules/profile/develop/system.nix
-
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = inputs // specialArgs;
-            home-manager.users.${username} = {pkgs, ...}: {
-              imports = [
-                ./user/${username}/home-manager.nix
-                ./modules/profile/develop/home-manager.nix
-              ];
-            };
-          }
-        ];
-      };
-
+    in {
+      nixosConfigurations = lib.mapAttrs makeNixosConfiguration instance;
     };
-  };
 }
