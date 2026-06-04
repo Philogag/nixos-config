@@ -14,7 +14,4 @@ if [[ ! -d ./hosts/$1 ]]; then
     help
 fi
 
-nix --experimental-features "nix-command flakes" \
-    run github:nix-community/disko/latest \
-     --option substituters  "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store" \
-     -- --mode destroy,format,mount ./hosts/$1/disko-config.nix
+nix-shell -p disko --run "disko --mode destroy,format,mount ./hosts/$1/disko-config.nix"
