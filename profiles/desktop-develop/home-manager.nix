@@ -7,6 +7,7 @@
   programs.home-manager.enable = true;
 
   home.packages = with pkgs; [
+    firefox
   ];
 
   programs.vscode.enable = true;

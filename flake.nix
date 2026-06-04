@@ -15,26 +15,8 @@
       lib = nixpkgs.lib;
       instance = import ./instance.nix;
 
-      systemStateVersion =
-        let
-          src = inputs.nixpkgs.url;
-          parts = builtins.split "/" src;
-          branch = builtins.last parts;
-        in
-        if builtins.match "nixos-.*" branch != null then
-          builtins.replaceStrings [ "nixos-" ] [ "" ] branch
-        else
-          "unstable";
-      homeStateVersion =
-        let
-          src = inputs.home-manager.url;
-          parts = builtins.split "/" src;
-          branch = builtins.last parts;
-        in
-        if builtins.match "release-.*" branch != null then
-          builtins.replaceStrings [ "release-" ] [ "" ] branch
-        else
-          "unstable";
+      systemStateVersion = "26.05";
+      homeStateVersion = "26.05";
 
       makeNixosConfiguration = name: cfg:
         let
@@ -49,12 +31,14 @@
             nix.settings.substituters = [ 
               "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store" 
             ];
+	    nixpkgs.config.allowUnfree = true;
           };
         in lib.nixosSystem {
           inherit specialArgs;
           system = os_arch;
           modules = [
             sharedModule
+            disko.nixosModules.disko
             ./hosts/${select_host}
             ./profiles/${select_profile}/nixos.nix
 
